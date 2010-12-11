@@ -21,7 +21,7 @@ The installation process.
 
 == Frequently Asked Questions ==
 
-= If i deactivate this plugin, what happen to previous posts =
+= If i deactivate this plugin, what happen to previous posts ? =
 All posts will be changed back to the original nofollow / dofollow state. This plugin does not modify recorded post on database.
 
 = What if the link has old rel ? =
@@ -33,9 +33,7 @@ This plugin will smartly add necessary rels instead of removing the old one.
 * First release.
 
 == Upgrade Notice ==
-
 None
 
 == Screenshots ==
-
 None
