@@ -31,3 +31,11 @@ This plugin will smartly add necessary rels instead of removing the old one.
 
 = 1.0.0 =
 * First release.
+
+== Upgrade Notice ==
+
+None
+
+== Screenshots ==
+
+None
