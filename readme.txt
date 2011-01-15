@@ -2,9 +2,9 @@
 Contributors: Xrvel
 Donate link: http://www.niceplugins.com/donate/
 Tags: nofollow, seo
-Requires at least: 3.0.2
-Tested up to: 3.0.2
-Stable tag: 1.0.0
+Requires at least: 3.0.1
+Tested up to: 3.0.4
+Stable tag: 1.0.1
 
 Add nofollow to all external links on posts / pages automatically. You can add exception to some URLs.
 
@@ -28,6 +28,9 @@ All posts will be changed back to the original nofollow / dofollow state. This p
 This plugin will smartly add necessary rels instead of removing the old one.
 
 == Changelog ==
+
+= 1.0.1 =
+* Minor function renaming
 
 = 1.0.0 =
 * First release.

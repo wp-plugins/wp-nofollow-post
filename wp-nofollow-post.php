@@ -4,7 +4,7 @@ Plugin Name: WP Nofollow Post
 Plugin URI: http://www.niceplugins.com/
 Description: Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes.
 Author: Xrvel
-Version: 1.0.0
+Version: 1.0.1
 Author URI: http://www.xrvel.com/
 */
 
@@ -170,15 +170,15 @@ function xrvel_nfp_uninstall() {
 	delete_option('xrvel_nfp_options');
 }
 
-if (!function_exists('xrvel_get_domain_name')) {
-	function xrvel_get_domain_name() {
+if (!function_exists('xrvel_nfp_get_domain_name')) {
+	function xrvel_nfp_get_domain_name() {
 		$s = strtolower($_SERVER['SERVER_NAME']);
 		return $s;
 	}
 }
 
-if (!function_exists('xrvel_fix_rel')) {
-	function xrvel_fix_rel($rel) {
+if (!function_exists('xrvel_nfp_fix_rel')) {
+	function xrvel_nfp_fix_rel($rel) {
 		$rel = trim($rel);
 		if ($rel == '') {
 			return '';
@@ -196,8 +196,8 @@ if (!function_exists('xrvel_fix_rel')) {
 	}
 }
 
-if (!function_exists('xrvel_fix_html')) {
-	function xrvel_fix_html($text) {
+if (!function_exists('xrvel_nfp_fix_html')) {
+	function xrvel_nfp_fix_html($text) {
 		$text = preg_replace('/href([ ]+)?=([ ]+)?\"(.*)\"/iU', 'href="\\3"', $text);
 		$text = preg_replace('/rel([ ]+)?=([ ]+)?\"(.*)\"/iU', 'rel="\\3"', $text);
 	
@@ -208,8 +208,8 @@ if (!function_exists('xrvel_fix_html')) {
 }
 
 function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
-	$dn = xrvel_get_domain_name();
-	$text = xrvel_fix_html($text);
+	$dn = xrvel_nfp_get_domain_name();
+	$text = xrvel_nfp_fix_html($text);
 	preg_match_all("/<a(.*)href=\"(.*)\"(.*)?>(.*)?<\/a>/iU", $text, $matches);
 	$max = count($matches[0]);
 	for ($i=0;$i<$max;$i++) {
@@ -218,12 +218,12 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 		if (preg_match('/^http(s)?\:\/\//i', $href)) {/* seems external link */
 			$pu = parse_url($href);
 			$proceed = false;
-			if (preg_match('/'.xrvel_safe_regexp($dn).'+$/i', $pu['host'])) {/* internal link */
+			if (preg_match('/'.xrvel_nfp_safe_regexp($dn).'+$/i', $pu['host'])) {/* internal link */
 				$proceed = false;
 			} else {/* external, lets check if it is on exception list */
 				$found = false;
 				foreach ($exception_domains as $ed) {
-					if (preg_match('/'.xrvel_safe_regexp($ed).'+$/i', $pu['host'])) {/* exception match */
+					if (preg_match('/'.xrvel_nfp_safe_regexp($ed).'+$/i', $pu['host'])) {/* exception match */
 						$found = true;
 					}
 				}
@@ -242,7 +242,7 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 					}
 					$rel_old = $match[1];
 					$rel_new = trim($rel_old.' '.X_ADD_REL);
-					$rel_new = xrvel_fix_rel($rel_new);
+					$rel_new = xrvel_nfp_fix_rel($rel_new);
 					$part_new = str_replace('rel="'.$rel_old.'"', 'rel="'.$rel_new.'"', $part1);
 					$to = '<a'.$part_new.'href="'.$href.'"'.$part2.'>'.$inner.'</a>';
 				} else if (preg_match('/rel="(.*)?"/iU', $part2, $match)) {
@@ -251,7 +251,7 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 					}
 					$rel_old = $match[1];
 					$rel_new = trim($rel_old.' '.X_ADD_REL);
-					$rel_new = xrvel_fix_rel($rel_new);
+					$rel_new = xrvel_nfp_fix_rel($rel_new);
 					$part_new = str_replace('rel="'.$rel_old.'"', 'rel="'.$rel_new.'"', $part2);
 					$to = '<a'.$part1.'href="'.$href.'"'.$part_new.'>'.$inner.'</a>';
 				} else {
@@ -266,8 +266,8 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 	return $text;
 }
 
-if (!function_exists('xrvel_safe_regexp')) {
-	function xrvel_safe_regexp($str) {
+if (!function_exists('xrvel_nfp_safe_regexp')) {
+	function xrvel_nfp_safe_regexp($str) {
 		$str = str_replace('.', '\.', $str);
 		$str = str_replace('-', '\-', $str);
 		return $str;
