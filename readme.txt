@@ -30,7 +30,7 @@ This plugin will smartly add necessary rels instead of removing the old one.
 == Changelog ==
 
 = 1.0.1 =
-* Minor function renaming
+* Minor function renaming.
 
 = 1.0.0 =
 * First release.
