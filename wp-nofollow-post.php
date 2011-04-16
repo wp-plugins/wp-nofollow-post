@@ -2,9 +2,9 @@
 /*
 Plugin Name: WP Nofollow Post
 Plugin URI: http://www.niceplugins.com/
-Description: Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes.
+Description: Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes. For addition this plugin can remove links on comments too.
 Author: Xrvel
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.xrvel.com/
 */
 
@@ -31,6 +31,7 @@ function xrvel_nfp_get_options() {
 			'enabled' => 1,
 			'enable_on' => 1,
 			'exclude' => 'google.com,yahoo.com',
+			'remove_comment_links' => 1,
 			'nofollow_rel' => 'external nofollow',
 			'dofollow_rel' => 'follow dofollow'
 		);
@@ -52,6 +53,7 @@ function xrvel_nfp_options() {
 		$x_exclude = '';
 		$x_nofollow_rel = 'external nofollow';
 		$x_dofollow_rel = 'follow dofollow';
+		$x_remove_comment_links = 1;
 		if (isset($_POST['x_enabled'])) {
 			$x_enabled = intval($_POST['x_enabled']);
 		}
@@ -61,6 +63,9 @@ function xrvel_nfp_options() {
 		if (isset($_POST['x_exclude'])) {
 			$x_exclude = trim($_POST['x_exclude']);
 			$x_exclude = preg_replace('/([^a-z0-9\-\.\,]+)/i', '', $x_exclude);
+		}
+		if (isset($_POST['remove_comment_links'])) {
+			$x_remove_comment_links = intval($_POST['remove_comment_links']);
 		}
 		if (isset($_POST['x_nofollow_rel'])) {
 			$x_nofollow_rel = strtolower(trim($_POST['x_nofollow_rel']));
@@ -72,6 +77,7 @@ function xrvel_nfp_options() {
 			'enabled' => $x_enabled,
 			'enable_on' => $x_enable_on,
 			'exclude' => $x_exclude,
+			'remove_comment_links' => $x_remove_comment_links,
 			'nofollow_rel' => $x_nofollow_rel,
 			'dofollow_rel' => $x_dofollow_rel
 		);
@@ -112,6 +118,13 @@ function xrvel_nfp_options() {
 	</p>
 	<p>
 		Dofollow rels that will be removed if found : <input type="text" name="x_dofollow_rel" value="<?php echo htmlentities($opt['dofollow_rel']); ?>" style="text-transform:lowercase" />
+	</p>
+	<p>
+	Remove links on comments ? :
+	<select name="remove_comment_links">
+	<option value="1"<?php if ($opt['remove_comment_links'] == 1) : ?> selected="selected"<?php endif; ?>>Yes</option>
+	<option value="0"<?php if ($opt['remove_comment_links'] == 0) : ?> selected="selected"<?php endif; ?>>No</option>
+	</select>
 	</p>
 	<p class="submit">
 		<input type="submit" name="Submit" class="button-primary" value="Save Changes" />
@@ -266,6 +279,13 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 	return $text;
 }
 
+if (!function_exists('xrvel_nfp_remove_comment_links')) {
+	function xrvel_nfp_remove_comment_links($str) {
+		$str = preg_replace('/\<a(.*)\>(.*)\<\/a\>/iU', '$2', $str);
+		return $str;
+	}
+}
+
 if (!function_exists('xrvel_nfp_safe_regexp')) {
 	function xrvel_nfp_safe_regexp($str) {
 		$str = str_replace('.', '\.', $str);
@@ -274,8 +294,14 @@ if (!function_exists('xrvel_nfp_safe_regexp')) {
 	}
 }
 
-add_filter('the_content', 'xrvel_nfp_text_mod');
-add_action('admin_menu', 'xrvel_nfp_add_pages');
+if (!is_admin()) {
+	$opt = xrvel_nfp_get_options();
+	add_filter('the_content', 'xrvel_nfp_text_mod');
+	if ($opt['remove_comment_links'] != 0) {
+		add_filter('comment_text', 'xrvel_nfp_remove_comment_links');
+	}
+}
 
+add_action('admin_menu', 'xrvel_nfp_add_pages');
 register_uninstall_hook(ABSPATH.PLUGINDIR.'/wp-nofollow-post/wp-nofollow-post.php', 'xrvel_nfp_uninstall');
 ?>
