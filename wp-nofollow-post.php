@@ -4,7 +4,7 @@ Plugin Name: WP Nofollow Post
 Plugin URI: http://www.niceplugins.com/
 Description: Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes. For addition this plugin can remove links on comments too.
 Author: Xrvel
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.xrvel.com/
 */
 
@@ -228,10 +228,12 @@ function xrvel_nfp_modify_nofollow($text, $exception_domains = array()) {
 	for ($i=0;$i<$max;$i++) {
 		$href = $matches[2][$i];
 
-		if (preg_match('/^http(s)?\:\/\//i', $href)) {/* seems external link */
-			$pu = parse_url($href);
+		if ('' != $href && preg_match('/^http(s)?\:\/\//i', $href)) {/* seems external link */
+			$pu = @parse_url($href);
 			$proceed = false;
-			if (preg_match('/'.xrvel_nfp_safe_regexp($dn).'+$/i', $pu['host'])) {/* internal link */
+			if (false === $pu) {
+				$proceed = false;
+			} else if (preg_match('/'.xrvel_nfp_safe_regexp($dn).'+$/i', $pu['host'])) {/* internal link */
 				$proceed = false;
 			} else {/* external, lets check if it is on exception list */
 				$found = false;
