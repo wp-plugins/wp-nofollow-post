@@ -4,7 +4,7 @@ Plugin Name: WP Nofollow Post
 Plugin URI: http://www.niceplugins.com/
 Description: Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes. For addition this plugin can remove links on comments too.
 Author: Xrvel
-Version: 1.0.3
+Version: 1.0.4
 Author URI: http://www.xrvel.com/
 */
 
@@ -162,8 +162,12 @@ function xrvel_nfp_text_mod($text) {
 		return $text;
 	}
 
-	define('X_ADD_REL', $opt['nofollow_rel']);
-	define('X_REMOVE_REL', $opt['dofollow_rel']);
+	if (!defined('X_ADD_REL')) {
+		define('X_ADD_REL', $opt['nofollow_rel']);
+	}
+	if (!defined('X_REMOVE_REL')) {
+		define('X_REMOVE_REL', $opt['dofollow_rel']);
+	}
 
 	$ignore = explode(',', $opt['exclude']);
 	$new = array();
