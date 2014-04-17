@@ -1,8 +1,7 @@
 === WP Nofollow Post ===
 Contributors: Xrvel
-Donate link: http://www.niceplugins.com/donate/
 Tags: nofollow, seo
-Requires at least: 3.0.1
+Requires at least: 3.9
 Tested up to: 3.5.1
 Stable tag: 1.0.4
 

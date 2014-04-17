@@ -131,7 +131,7 @@ function xrvel_nfp_options() {
 	</p>
 	</form>
 	<p>
-		Plugin by <a href="http://www.niceplugins.com" target="_blank">NicePlugins.com</a>, by <a href="http://www.xrvel.com" target="_blank">Xrvel</a>
+		Plugin by <a href="http://www.xrvel.com" target="_blank">Xrvel</a>
 	</p>
 	<?php
 	echo '</div>';
