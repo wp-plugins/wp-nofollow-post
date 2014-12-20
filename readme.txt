@@ -2,7 +2,7 @@
 Contributors: Xrvel
 Tags: nofollow, seo
 Requires at least: 3.0.1
-Tested up to: 3.9
+Tested up to: 4.1
 Stable tag: 1.0.4
 
 Add nofollow attribute to all external links on posts / pages. Exception can be added on several domains. This plugin will not remove old rel of a link (if any), but this plugin smartly adds necessary rel attributes. For addition this plugin can remove links on comments too.
